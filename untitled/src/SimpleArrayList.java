@@ -8,7 +8,7 @@ public class SimpleArrayList implements SimpleList{
     private static final String[] DEFAULTCAPACITY_EMPTY_ELEMENTDATA = {};
     private static final int DEFAULT_CAPACITY = 10;
 
-    protected int modCount = 0;
+    private int modCount = 0;
     private int size;
     String[] elementData;
 
