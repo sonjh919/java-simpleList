@@ -17,6 +17,11 @@ public class SimpleArrayList<E> implements SimpleList<E>{
         elementData = DEFAULTCAPACITY_EMPTY_ELEMENTDATA;
     }
 
+    public <T> SimpleArrayList(T[] arrays) {
+        elementData = arrays;
+    }
+
+
     /**
      * modCount란?
      * 1. 컬렉션의 구조적 변경 감지

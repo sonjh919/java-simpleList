@@ -1,6 +1,8 @@
-import java.util.LinkedList;
-
 public interface SimpleList<E> {
+
+    static <T> SimpleList<T> fromArrayToList(T[] arrays) {
+        return new SimpleArrayList<T>(arrays);
+    }
 
     boolean add(E element);
 
