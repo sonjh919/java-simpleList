@@ -29,6 +29,10 @@ public class SimpleArrayList<E> implements SimpleList<E>{
         elementData = new Object[]{v,v1,v2};
     }
 
+    public SimpleArrayList(E e) {
+        elementData = new Object[]{e};
+    }
+
 
     /**
      * modCount란?

@@ -1,7 +1,3 @@
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-
 public interface SimpleList<E> {
 
     static <T> SimpleList<T> fromArrayToList(T[] arrays) {
@@ -27,6 +23,13 @@ public interface SimpleList<E> {
             }
         }
         return tempList;
+    }
+
+    // PECS는 'Producer-extends, Consumer-super'의 약자. 생산하는 쪽은 extends를, 소비하는 쪽은 super를 설정하자.
+    static <T> void copy(SimpleList<? extends T> laserPrinters, SimpleList<? super T> printers) {
+        for(int i=0;i<laserPrinters.size();i++){
+            printers.add(laserPrinters.get(i));
+        }
     }
 
     boolean add(E element);
