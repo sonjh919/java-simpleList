@@ -1,16 +1,17 @@
-import static jdk.internal.util.ArraysSupport.newLength;
 
 import java.util.Arrays;
 import java.util.Objects;
 
-public class SimpleArrayList implements SimpleList{
+public class SimpleArrayList<E> implements SimpleList<E>{
 
     private static final String[] DEFAULTCAPACITY_EMPTY_ELEMENTDATA = {};
     private static final int DEFAULT_CAPACITY = 10;
 
+    public static final int SOFT_MAX_ARRAY_LENGTH = Integer.MAX_VALUE - 8;
+
     private int modCount = 0;
     private int size;
-    String[] elementData;
+    Object[] elementData;
 
     public SimpleArrayList() {
         elementData = DEFAULTCAPACITY_EMPTY_ELEMENTDATA;
@@ -22,24 +23,24 @@ public class SimpleArrayList implements SimpleList{
      * 2. 동시 수정 감지 -> 동시성 관리 -> 안정성 보장
      */
     @Override
-    public boolean add(String value) {
+    public boolean add(E element) {
         modCount++;
-        add(value, elementData, size);
+        add(element, elementData, size);
         return true;
     }
 
-    private void add(String e, String[] elementData, int s) {
+    private void add(E element, Object[] elementData, int s) {
         if (s == elementData.length)
             elementData = grow();
-        elementData[s] = e;
+        elementData[s] = element;
         size = s + 1;
     }
     
-    private String[] grow() {
+    private Object[] grow() {
         return grow(size + 1);
     }
 
-    private String[] grow(int minCapacity) {
+    private Object[] grow(int minCapacity) {
         int oldCapacity = elementData.length;
         if (oldCapacity > 0 || elementData != DEFAULTCAPACITY_EMPTY_ELEMENTDATA) { // 기존 배열이 비어있지 않거나 기본 빈 배열이 아닌 경우
             int newCapacity = newLength(oldCapacity,
@@ -51,8 +52,34 @@ public class SimpleArrayList implements SimpleList{
         }
     }
 
+    public static int newLength(int oldLength, int minGrowth, int prefGrowth) {
+        // preconditions not checked because of inlining
+        // assert oldLength >= 0
+        // assert minGrowth > 0
+
+        int prefLength = oldLength + Math.max(minGrowth, prefGrowth); // might overflow
+        if (0 < prefLength && prefLength <= SOFT_MAX_ARRAY_LENGTH) {
+            return prefLength;
+        } else {
+            // put code cold in a separate method
+            return hugeLength(oldLength, minGrowth);
+        }
+    }
+
+    private static int hugeLength(int oldLength, int minGrowth) {
+        int minLength = oldLength + minGrowth;
+        if (minLength < 0) { // overflow
+            throw new OutOfMemoryError(
+                    "Required array length " + oldLength + " + " + minGrowth + " is too large");
+        } else if (minLength <= SOFT_MAX_ARRAY_LENGTH) {
+            return SOFT_MAX_ARRAY_LENGTH;
+        } else {
+            return minLength;
+        }
+    }
+
     @Override
-    public void add(int index, String value) {
+    public void add(int index, E element) {
         rangeCheckForAdd(index); // index 범위 검증
         modCount++;
         final int s;
@@ -64,7 +91,7 @@ public class SimpleArrayList implements SimpleList{
         System.arraycopy(elementData, index, // 추가
                 elementData, index + 1,
                 s - index);
-        elementData[index] = value;
+        elementData[index] = element;
         size = s + 1;
     }
 
@@ -74,27 +101,32 @@ public class SimpleArrayList implements SimpleList{
     }
 
     @Override
-    public String set(int index, String value) {
+    public E set(int index, E element) {
         Objects.checkIndex(index, size);
-        String oldValue = elementData[index];
-        elementData[index] = value;
+        E oldValue = elementData(index);
+        elementData[index] = element;
         return oldValue; // 이전 값 반환
     }
 
+    @SuppressWarnings("unchecked")
+    E elementData(int index) {
+        return (E) elementData[index];
+    }
+
     @Override
-    public String get(int index) {
+    public E get(int index) {
         Objects.checkIndex(index, size);
-        return elementData[index];
+        return elementData(index);
     }
 
     @Override
-    public boolean contains(String value) {
-        return indexOf(value) >=0; // indexOf: 리스트에 있으면 인덱스, 없으면 -1 반환
+    public boolean contains(E element) {
+        return indexOf(element) >=0; // indexOf: 리스트에 있으면 인덱스, 없으면 -1 반환
     }
 
     @Override
-    public int indexOf(String value) {
-        return indexOfRange(value, 0, size);
+    public int indexOf(E element) {
+        return indexOfRange(element, 0, size);
     }
 
     int indexOfRange(Object o, int start, int end) {
@@ -126,18 +158,18 @@ public class SimpleArrayList implements SimpleList{
     }
 
     @Override
-    public boolean remove(String value) {
+    public boolean remove(E element) {
         final Object[] es = elementData;
         final int size = this.size;
         int i = 0;
         found: { // 객체 찾기: 못찾으면 false 리턴
-            if (value == null) {
+            if (element == null) {
                 for (; i < size; i++)
                     if (es[i] == null)
                         break found;
             } else {
                 for (; i < size; i++)
-                    if (value.equals(es[i]))
+                    if (element.equals(es[i]))
                         break found;
             }
             return false;
@@ -156,11 +188,11 @@ public class SimpleArrayList implements SimpleList{
     }
 
     @Override
-    public String remove(int index) {
+    public E remove(int index) {
         Objects.checkIndex(index, size);
         final Object[] es = elementData;
 
-        @SuppressWarnings("unchecked") String oldValue = (String) es[index];
+        @SuppressWarnings("unchecked") E oldValue = (E) es[index];
         fastRemove(es, index);
 
         return oldValue;

@@ -1,26 +1,26 @@
 import java.util.LinkedList;
 
-public interface SimpleList {
+public interface SimpleList<E> {
 
-    boolean add(String value);
+    boolean add(E element);
 
-    void add(int index, String value);
+    void add(int index, E element);
 
-    String set(int index, String value);
+    E set(int index, E element);
 
-    String get(int index);
+    E get(int index);
 
-    boolean contains(String value);
+    boolean contains(E element);
 
-    int indexOf(String value);
+    int indexOf(E element);
 
     int size();
 
     boolean isEmpty();
 
-    boolean remove(String value);
+    boolean remove(E element);
 
-    String remove(int index);
+    E remove(int index);
 
     void clear();
 }
