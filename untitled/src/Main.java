@@ -28,6 +28,13 @@ public class Main {
         final double doubleTotal = SimpleList.sum(doubleValues); // 1.2
         final double intTotal = SimpleList.sum(intValues);  // 3
 
+        // mission 4
+        final SimpleList<Double> doubleValues2 = new SimpleArrayList<Double>(-0.1, 0.5, 0.7);
+        final SimpleList<Integer> intValues2 = new SimpleArrayList<Integer>(-10, 1, 2);
+
+        final SimpleList<Double> filteredDoubleValues = SimpleList.filterNegative(doubleValues2);
+        final SimpleList<Integer> filteredIntValues = SimpleList.filterNegative(intValues2);
+
 
     }
 }
