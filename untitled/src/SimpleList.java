@@ -1,3 +1,5 @@
+import java.util.LinkedList;
+
 public interface SimpleList {
 
     boolean add(String value);
