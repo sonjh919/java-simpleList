@@ -8,6 +8,7 @@ public class Main {
 
         List<String> a = new ArrayList<>();
         List<String> b = new LinkedList<>();
+        List<Integer> c = new ArrayList<>();
 
         SimpleList<Integer> values = new SimpleArrayList<Integer>();
         values.add(1);
@@ -19,6 +20,13 @@ public class Main {
         // mission 2
         final String[] arrays = {"first", "second"};
         final SimpleList<String> values2 = SimpleList.<String>fromArrayToList(arrays);
+
+        // mission 3
+        final SimpleList<Double> doubleValues = new SimpleArrayList<Double>(0.5, 0.7);
+        final SimpleList<Integer> intValues = new SimpleArrayList<Integer>(1, 2);
+
+        final double doubleTotal = SimpleList.sum(doubleValues); // 1.2
+        final double intTotal = SimpleList.sum(intValues);  // 3
 
 
     }

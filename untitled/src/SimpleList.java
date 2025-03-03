@@ -1,7 +1,22 @@
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+
 public interface SimpleList<E> {
 
     static <T> SimpleList<T> fromArrayToList(T[] arrays) {
         return new SimpleArrayList<T>(arrays);
+    }
+
+    static <T extends Number> double sum(SimpleList<T> values) {
+        double sum = 0;
+
+        for(int i=0;i<values.size();i++){
+            T currentValue = values.get(i);
+            sum += currentValue.doubleValue();
+        }
+
+        return sum;
     }
 
     boolean add(E element);
